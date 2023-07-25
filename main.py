@@ -1,12 +1,12 @@
 import requests
 import datetime
-from model import engine, SwapiPerson
+from model import engine, SwapiPerson, Base
 from sqlalchemy.orm import Session, sessionmaker
 
 # person_count = requests.get(f"https://swapi.dev/api/people").json()["count"]
 
 
-def get_person(person_id):
+def get_person(person_id: int):
     json_data = requests.get(f"https://swapi.dev/api/people/{person_id}").json()
     return json_data
 
@@ -23,11 +23,6 @@ def get_value_url(urls_list, column):
 
 def add_person(json_value):
     session = Session(bind=engine)
-    films_value = get_value_url(json_value["films"], "title")
-    planets_value = get_value_url(json_value["homeworld"], "name")
-    species_value = get_value_url(json_value["species"], "name")
-    starships_value = get_value_url(json_value["starships"], "name")
-    vehicles_value = get_value_url(json_value["vehicles"], "name")
     value_add = SwapiPerson(
         name=json_value["name"],
         birth_year=json_value["birth_year"],
@@ -37,11 +32,11 @@ def add_person(json_value):
         height=json_value["height"],
         mass=json_value["mass"],
         skin_color=json_value["skin_color"],
-        films=films_value,                   # --- URL
-        planets=planets_value,               # --- URL
-        species=species_value,               # --- URL
-        starships=starships_value,           # --- URL
-        vehicles=vehicles_value,             # --- URL
+        films=get_value_url(json_value["films"], "title"),                  # --- URL
+        planets=get_value_url(json_value["homeworld"], "name"),             # --- URL
+        species=get_value_url(json_value["species"], "name"),               # --- URL
+        starships=get_value_url(json_value["starships"], "name"),           # --- URL
+        vehicles=get_value_url(json_value["vehicles"], "name"),             # --- URL
     )
     session.add(value_add)
     print(session.new)
@@ -49,11 +44,12 @@ def add_person(json_value):
 
 
 if __name__ == '__main__':
+    Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
+
     start = datetime.datetime.now()
 
     for person_id in range(1, 10):
         add_person(get_person(person_id))
 
     print('Время выполнения - ', datetime.datetime.now() - start)
-    print("Готово")
-

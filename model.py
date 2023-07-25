@@ -1,3 +1,4 @@
+# from dotenv import load_dotenv
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy import create_engine, Integer, String, Column
 from sqlalchemy.ext.declarative import declarative_base
@@ -39,4 +40,4 @@ class SwapiPerson(Base):
     vehicles = Column(String)
 
 
-Base.metadata.create_all(engine)
+
