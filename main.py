@@ -3,15 +3,19 @@ import datetime
 from model import engine, SwapiPerson, Base
 from sqlalchemy.orm import Session, sessionmaker
 
-# person_count = requests.get(f"https://swapi.dev/api/people").json()["count"]
+
+# ОПРЕДЕЛЯЕМ КОЛИЧЕСТВО ПЕРСОНАЖЕЙ
+# PERSON_COUNT = requests.get(f"https://swapi.dev/api/people").json()["count"]
 
 
+# ПОЛУЧАЕМ СТРАНИЦУ ПЕСОНАЖА
 def get_person(person_id: int):
     json_data = requests.get(f"https://swapi.dev/api/people/{person_id}").json()
     return json_data
 
 
-def get_value_url(urls_list, column):
+# ПОЛУЧАЕМ ДАННЫЕ СО СТРАНЫЦЫ ПО URL
+def get_value_url(urls_list, column: str):
     value_list = []
     if isinstance(urls_list, str):
         value_list.append(requests.get(f"{urls_list}").json()[column])
@@ -21,6 +25,8 @@ def get_value_url(urls_list, column):
     return value_list
 
 
+# ПАРСИМ ДАННЫЕ СО СТРАНИЦЫ
+# И ДОБАВЛЯЕМ В БД
 def add_person(json_value):
     session = Session(bind=engine)
     value_add = SwapiPerson(
@@ -32,18 +38,18 @@ def add_person(json_value):
         height=json_value["height"],
         mass=json_value["mass"],
         skin_color=json_value["skin_color"],
-        films=get_value_url(json_value["films"], "title"),                  # --- URL
-        planets=get_value_url(json_value["homeworld"], "name"),             # --- URL
-        species=get_value_url(json_value["species"], "name"),               # --- URL
-        starships=get_value_url(json_value["starships"], "name"),           # --- URL
-        vehicles=get_value_url(json_value["vehicles"], "name"),             # --- URL
+        films=get_value_url(json_value["films"], "title"),  # --- URL
+        planets=get_value_url(json_value["homeworld"], "name"),  # --- URL
+        species=get_value_url(json_value["species"], "name"),  # --- URL
+        starships=get_value_url(json_value["starships"], "name"),  # --- URL
+        vehicles=get_value_url(json_value["vehicles"], "name"),  # --- URL
     )
     session.add(value_add)
     print(session.new)
     session.commit()
 
 
-if __name__ == '__main__':
+def main():
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
@@ -53,3 +59,7 @@ if __name__ == '__main__':
         add_person(get_person(person_id))
 
     print('Время выполнения - ', datetime.datetime.now() - start)
+
+
+if __name__ == '__main__':
+    main()
