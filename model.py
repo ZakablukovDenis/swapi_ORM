@@ -7,7 +7,7 @@ DB_USER = "postgres"
 DB_PASSWORD = "test123"
 DB_HOST = "localhost"
 DB_PORT = 5432
-DB_DB = "DB_TEST"
+DB_DB = "DB_Async"
 
 PG_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DB}"
 engine = create_async_engine(PG_DSN)
