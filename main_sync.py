@@ -14,7 +14,7 @@ def get_person(person_id: int):
     return json_data
 
 
-# ПОЛУЧАЕМ ДАННЫЕ СО СТРАНЫЦЫ ПО URL
+# ПОЛУЧАЕМ ДАННЫЕ СО СТРАНИЦЫ ПО URL
 def get_value_url(urls_list, column: str):
     value_list = []
     if isinstance(urls_list, str):
@@ -22,6 +22,7 @@ def get_value_url(urls_list, column: str):
     else:
         for url in urls_list:
             value_list.append(requests.get(f"{url}").json()[column])
+
     return value_list
 
 
