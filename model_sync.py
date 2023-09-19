@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.session import sessionmaker
@@ -9,14 +9,13 @@ DB_HOST = "localhost"
 DB_PORT = 5432
 DB_DB = "DB_Async"
 
-PG_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DB}"
-engine = create_async_engine(PG_DSN)
-Session = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+PG_DSN = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DB}"
+engine = create_engine(PG_DSN)
 Base = declarative_base()
 
 
 class SwapiPerson(Base):
-    __tablename__ = 'swapi_person_my'
+    __tablename__ = 'swapi_person_sync'
     id = Column(Integer, primary_key=True)
 
     name = Column(String)

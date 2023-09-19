@@ -1,11 +1,11 @@
 import requests
 import datetime
-from model import engine, SwapiPerson, Base
+from model_sync import engine, SwapiPerson, Base
 from sqlalchemy.orm import Session, sessionmaker
 
 
 # ОПРЕДЕЛЯЕМ КОЛИЧЕСТВО ПЕРСОНАЖЕЙ
-# PERSON_COUNT = requests.get(f"https://swapi.dev/api/people").json()["count"]
+PERSON_COUNT = requests.get(f"https://swapi.dev/api/people").json()["count"]
 
 
 # ПОЛУЧАЕМ СТРАНИЦУ ПЕСОНАЖА
