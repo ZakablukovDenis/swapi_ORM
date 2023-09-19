@@ -3,7 +3,6 @@ import datetime
 from model_sync import engine, SwapiPerson, Base
 from sqlalchemy.orm import Session, sessionmaker
 
-
 # ОПРЕДЕЛЯЕМ КОЛИЧЕСТВО ПЕРСОНАЖЕЙ
 PERSON_COUNT = requests.get(f"https://swapi.dev/api/people").json()["count"]
 
@@ -11,6 +10,7 @@ PERSON_COUNT = requests.get(f"https://swapi.dev/api/people").json()["count"]
 # ПОЛУЧАЕМ СТРАНИЦУ ПЕСОНАЖА
 def get_person(person_id: int):
     json_data = requests.get(f"https://swapi.dev/api/people/{person_id}").json()
+    print(f'Запрос по персонажу {json_data["name"]} выполнен')
     return json_data
 
 
@@ -22,8 +22,7 @@ def get_value_url(urls_list, column: str):
     else:
         for url in urls_list:
             value_list.append(requests.get(f"{url}").json()[column])
-
-    return value_list
+    return ', '.join(value_list)
 
 
 # ПАРСИМ ДАННЫЕ СО СТРАНИЦЫ
@@ -46,19 +45,17 @@ def add_person(json_value):
         vehicles=get_value_url(json_value["vehicles"], "name"),  # --- URL
     )
     session.add(value_add)
-    print(session.new)
+    print(f"Запись персонажа {json_value['name']} завершена")
     session.commit()
 
 
 def main():
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
-
     start = datetime.datetime.now()
 
     for person_id in range(1, 10):
         add_person(get_person(person_id))
-
     print('Время выполнения - ', datetime.datetime.now() - start)
 
 

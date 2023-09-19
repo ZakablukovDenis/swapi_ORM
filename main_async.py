@@ -12,7 +12,7 @@ async def get_person(person_id: int, session: ClientSession):
     async with session.get(f'https://swapi.dev/api/people/{person_id}') as response:
         if response.ok:
             person = await response.json()
-            print(f"Запрос выполнен: {person_id}")
+            print(f'Запрос по персонажу {person["name"]} выполнен')
             return person
         else:
             pass
@@ -59,14 +59,14 @@ async def add_person(json_value):
         async with ClientSession() as client_session:
 
             for character_data in json_value:
-                print("Начинаем запись персонажа в БД")
+                print(f"Начинаем запись персонажа {character_data['name']} в Базу Данных")
                 if character_data is not None:
 
-                    films = await get_value_url(character_data["films"], "title", client_session),  # --- URL
-                    planets = await get_value_url([character_data["homeworld"]], "name", client_session),  # --- URL
-                    species = await get_value_url(character_data["species"], "name", client_session),  # --- URL
-                    starships = await get_value_url(character_data["starships"], "name", client_session),  # --- URL
-                    vehicles = await get_value_url(character_data["vehicles"], "name", client_session),  # --- URL
+                    films = await get_value_url(character_data["films"], "title", client_session)  # --- URL
+                    planets = await get_value_url([character_data["homeworld"]], "name", client_session)  # --- URL
+                    species = await get_value_url(character_data["species"], "name", client_session)  # --- URL
+                    starships = await get_value_url(character_data["starships"], "name", client_session)  # --- URL
+                    vehicles = await get_value_url(character_data["vehicles"], "name", client_session)  # --- URL
 
                     value_add = SwapiPerson(
                         name=character_data["name"],
@@ -97,8 +97,8 @@ async def main():
         await conn.commit()
 
     async with ClientSession() as session:
-        coro = [get_person(people_id, session=session) for people_id in range(1, 10)]
-        people = await asyncio.gather(*coro)
+        coroutines = [get_person(people_id, session=session) for people_id in range(1, 10)]
+        people = await asyncio.gather(*coroutines)
         asyncio.create_task(add_person(people))
 
     tasks = set(asyncio.all_tasks()) - {asyncio.current_task()}
@@ -107,5 +107,5 @@ async def main():
 
 
 if __name__ == '__main__':
-    # asyncio.run(main())
-    asyncio.run(main(), debug=True)
+    asyncio.run(main())
+    # asyncio.run(main(), debug=True)

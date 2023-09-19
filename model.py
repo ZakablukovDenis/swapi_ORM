@@ -16,7 +16,7 @@ Base = declarative_base()
 
 
 class SwapiPerson(Base):
-    __tablename__ = 'swapi_person_my'
+    __tablename__ = 'swapi_person_async'
     id = Column(Integer, primary_key=True)
 
     name = Column(String)
